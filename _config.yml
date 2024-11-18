@@ -2,7 +2,7 @@
 
 # NB! Set your site's url, otherwise stuff will break :)
 
-url: "https://n3rdh4x0r.github.io"
+url: "https://n3rdh4x0r.blog"
 # If you're hosting your site at a Project repository on GitHub pages
 # (https://yourusername.github.io/repository-name)
 # and NOT your user repository (https://yourusername.github.io)
@@ -10,22 +10,26 @@ url: "https://n3rdh4x0r.github.io"
 #
 # NB! Without this *nothing* will work, because it's used in every path :)
 # repository_name: /personal-jekyll-theme
+
 # Google tracking id
-# google-tracking-id: "UA-XXXXXXXX-X"
+google-tracking-id: "UA-XXXXXXXX-X"
+
 #############
 # HTML Head #
 #############
 lang: "en"
 author: "n3rdh4x0r"
-title: "{ n3rdh4x0r }"
-description: "Blog and website of nyxbyt3, blogging mainly for tech. Opinions expressed are mine."
-keywords: "n3rdh4x0r, personal, redteam, CTF"
+title: "{ n3rdh4x0r | CTF Walkthroughs and Red Team Insights }"
+description: "Explore the latest in red teaming, CTF writeups, and offensive security techniques by n3rdh4x0r."
+keywords: "n3rdh4x0r, CTF, red team, cybersecurity, offensive security, hacking, penetration testing"
 favicon: "/img/favicon.ico"
+
 ################
 # Header layout #
 ################
 black-favicon: "/img/black-lab-glass.ico"
 background-img: "../img/intro-bg.jpg"
+
 ##############################
 # Dynamic Text on the Header #
 ##############################
@@ -37,24 +41,22 @@ type-speed: 10
 start-delay: 200
 delete-delay: 5000
 lines: # You can add HTML Tags in the Text
-  - text: "The lower you fall, the higher you'll fly."
-  - text: "Infiltrate, adapt, overcome."
-  - text: "Exploit the weakness, breach the stronghold."
-  - text: "Think like an attacker, defend like a pro."
-  - text: "Break barriers, breach defenses."
-  - text: "Unleash your cyber prowess, conquer the digital domain."
-  - text: "Where’s your will to be weird?"
+  - text: "Breaking barriers, securing systems."
+  - text: "Think like a hacker, defend like a pro."
+  - text: "Explore. Hack. Learn."
+  - text: "CTFs, Red Teaming, and Offensive Security."
+  - text: "From exploitation to innovation."
+  - text: "Hacking minds, building defenses."
 me-img: "/img/jetpacktocat.png"
+
 # To use github profile pic uncomment the following line and replace 'user_name'
 # with your github user name.
-
 # me-img: "https://github.com/user_name.png?size=500"
 
 # To use gravatar profile pic uncomment the following line and replace 'email_hash'
 # with your gravatar profile email hash.
 # You can create the email hash by using an online tool like 'http://www.md5hashgenerator.com/'
 # just enter your email and it will generate the hash.
-
 # me-img: "https://www.gravatar.com/avatar/email_hash?s=500"
 
 ##############################
@@ -62,6 +64,7 @@ me-img: "/img/jetpacktocat.png"
 ##############################
 color-browser: "#000000"
 apple-status-bar-style: "black"
+
 ################
 # Web app mode #
 ################
@@ -73,6 +76,7 @@ icon-72p: "/img/web-app/icon-72p.png"
 icon-96p: "/img/web-app/icon-96p.png"
 icon-144p: "/img/web-app/icon-144p.png"
 icon-192p: "/img/web-app/icon-192p.png"
+
 ########
 # Blog #
 ########
@@ -90,6 +94,7 @@ pocket-share: True
 vkontakte-share: True
 disqus-shortname: "Personal-Blog"
 syntax-highlight: True
+
 ############
 # Timeline #
 ############
@@ -97,20 +102,20 @@ events:
   - image: "/img/timeline/spidertocat.png"  # Image for Present
     date: "Present"
     description: |
-      - Currently serving as a Senior Red Team Operator for the Dubai Government, focusing on assessing and enhancing cybersecurity defenses.
-      - Actively contributing to the cybersecurity community by sharing knowledge through blog posts, workshops, and speaking engagements.
-      - Currently pursuing a PhD in Cybersecurity, deepening expertise in offensive security research.
+      - Senior Red Team Operator for the Dubai Government.
+      - Actively contributing to the cybersecurity community through blogs and workshops.
+      - Pursuing a PhD in Offensive Security Research.
   - image: "/img/timeline/baracktocat.jpg"  # Image for 2016 to Present
     date: "2016 to 2022"
     description: |
-      - Launched professional career as a Red Team Operator at the Sri Lankan Defence Ministry, gaining hands-on experience in cybersecurity operations.
-      - Expanded expertise in offensive security operations at AIX Investment Group in Burj Khalifa, Dubai, working on high-profile security challenges.
-      - Completed MSc in Cybersecurity, strengthening academic and practical knowledge in the field.
+      - Red Team Operator at Sri Lankan Defence Ministry.
+      - Offensive Security Specialist at AIX Investment Group, Dubai.
+      - MSc in Cybersecurity.
   - image: "/img/timeline/default.png"  # Image for Childhood to University Years
-    date: "Childhood to University Years (2008-2015)"
+    date: "2008-2015"
     description: |
-      - Developed an early passion for coding and cybersecurity through CTF games and reverse engineering challenges.
-      - Pursued a BSc in Computer Science while actively participating in local and online CTF competitions, honing problem-solving and technical skills.
+      - Early passion for cybersecurity through CTFs and reverse engineering.
+      - BSc in Computer Science, with active participation in CTFs.
 
 
 
@@ -120,6 +125,7 @@ events:
 email: "n3rdh4x0r@gmail.com"
 # Set a url pointing to your publish PGP Public Key here, and it will appear in the Contact section
 pgp: False
+
 ################
 # Author Blurb #
 ################
@@ -128,11 +134,12 @@ pgp: False
 # This works best when your author blurb image has a transparent background, or matches your site background color.
 
 # if the author_blurb is not set, then this feature is skipped
-author_blurb:
-  "n3rdh4x0r is a cybersecurity enthusiast with a passion for red teaming and malware analysis. 
-  Based in Dubai, n3rdh4x0r has extensive experience in offensive security operations. 
-  In their free time, they enjoy diving into the latest cybersecurity challenges."
+author_blurb: |
+  "n3rdh4x0r is a red team specialist and cybersecurity researcher. 
+  Based in Dubai, focus on offensive security operations, malware analysis, 
+  and Capture The Flag (CTF) competitions. Follow for cutting-edge insights into the world of hacking."
 author_blurb_image: "/img/author.png"
+
 
 ##################
 # Social Buttons #
@@ -146,6 +153,8 @@ social:
     url: "https://twitter.com/n3rdh4x0r"
   - icon: "rss"
     url: "https://github.com/n3rdh4x0r/n3rdh4x0r.github.io/feed.xml"
+
+    
 ############
 # 404 page #
 ############
@@ -160,6 +169,7 @@ pages_list:
   Blog: "latest-post"
   Timeline: "timeline"
   Contact: "contact"
+  
 # Exclusion list from the generated _site
 exclude:
   - LICENSE
@@ -169,11 +179,15 @@ exclude:
   - scripts
   - Dockerfile
   - docker-compose.yml
+  
 # Pagination path
 paginate_path: "blog/page:num/"
+
 # Enable minification SASS
 sass:
   style: compressed
+
+# Plugins  
 plugins:
   - jekyll-paginate
   - jekyll-spaceship
