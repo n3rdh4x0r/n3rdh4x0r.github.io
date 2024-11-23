@@ -19,7 +19,7 @@ google-tracking-id: "UA-XXXXXXXX-X"
 #############
 lang: "en"
 author: "n3rdh4x0r"
-title: "{ n3rdh4x0r | CTF Walkthroughs and Red Team Insights }"
+title: "{ n3rdh4x0r}"
 description: "Explore the latest in red teaming, CTF writeups, and offensive security techniques by n3rdh4x0r."
 keywords: "n3rdh4x0r, CTF, red team, cybersecurity, offensive security, hacking, penetration testing"
 favicon: "/img/favicon.ico"
