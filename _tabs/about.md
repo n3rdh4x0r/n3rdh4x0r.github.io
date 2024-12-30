@@ -7,8 +7,6 @@ order: 4
 With over a decade of experience in offensive security, I specialize in Windows research and exploitation, red teaming, malware development, analysis, and reverse engineering.
 Currently, I balance my work as a red teamer for the Dubai Government with pursuing an MSc in Cybersecurity at IU University.
 
-Beyond cybersecurity, I have a deep appreciation for Japanese language and culture, which I explore whenever time permits.
-
 Certifications
 ---
 * Offensive Security Exploitation Expert (OSEE)
