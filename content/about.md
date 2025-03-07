@@ -3,8 +3,6 @@ title: "About"
 draft: false
 ---
 
-# About
-
 With 8+ years of experience in offensive security, I specialize in red teaming, reverse engineering, and Windows research. My work focuses on identifying and exploiting vulnerabilities to strengthen organizational defenses. I have also delivered live training sessions to help others build their skills in offensive security.
 
 Currently, I serve as a Senior Red Team / Offensive Security Engineer for the Dubai Government, where I lead high-stakes security assessments and contribute to enhancing the organization’s cybersecurity posture.
