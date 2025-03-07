@@ -12,5 +12,6 @@ tags:
   - Lame
 
 aliases:
+  - HTB-Lame
 
 ---
