@@ -1,6 +1,6 @@
 baseURL = "http://localhost"
-copyright = "© 2020 - 2023 Michael Schnerring"
-title = "Michael Schnerring"
+copyright = "© 2020 - 2023 Dilanka Kaushal Hewage"
+title = "Dilanka Kaushal Hewage"
 #paginate = 10
 enableRobotsTXT = true
 enableGitInfo = true
@@ -8,22 +8,14 @@ enableGitInfo = true
 [build]
   noJSConfigInAssets = true
   [build.buildStats]
-    # With each build, Hugo writes a hugo_stats.json file that contains arrays
-    # of the class attributes, id attributes, and tags of each HTML element
-    # within the published site. For production builds, this file is required
-    # by PurgeCSS to prune unused CSS.
     enable = true
 
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
-      # This setting allows inlining <script> and <style> tags in markdown,
-      # which is useful and required to use Prism plugins, but may be dangerous
-      # if the content isn't trustworthy.
       unsafe = true
 
 [imaging]
-  # JPEG and WebP quality
   quality = 90
 
 [outputs]
@@ -37,21 +29,21 @@ enableGitInfo = true
     notAlternative = true
 
 [params]
-  # dark or light, defaults to light
+  # Set default theme to dark (Dracula is a dark theme)
   defaultTheme = "dark"
-  # gray red green yellow blue purple aqua orange, defaults to blue
-  themeColor = "aqua"
-  # soft medium hard, defaults to medium
+  # Dracula's primary color is purple, but you can adjust as needed
+  themeColor = "purple"
+  # Dracula typically has high contrast
   themeContrast = "hard"
-  author = "Michael Schnerring"
-  subtitle = "Software Engineer"
-  description = "Michael Schnerring is a coder and computer enthusiast."
+  author = "Dilanka Kaushal Hewage"
+  subtitle = "Red Team / Offensive Security Engineer"
+  description = "Gray Hat"
 
   # Plausible auth secret to enable public dashboard
   plausibleAuth = "hDl_ZT_txy4BS608-H3Y0"
 
   [params.logo]
-    text = "schnerring.net"
+    text = "n3rdh4x0r.blog"
     url = "/"
 
   [params.prism]
@@ -77,12 +69,7 @@ enableGitInfo = true
       "command-line"
     ]
 
-  # Social share links for posts:
-  #   - iconSuite: "simple-icon" or "tabler-icon"
-  #   - iconName: name of the icon from the "iconSuite"
-  #   - {url} placeholder for post .Permalink
-  #   - {title} placeholder for post .Title
-  # See  https://github.com/bradvin/social-share-urls for more format strings
+  # Social share links for posts
   [[params.socialShare]]
     iconSuite = "simple-icon"
     iconName = "x"
