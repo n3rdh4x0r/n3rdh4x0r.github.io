@@ -256,9 +256,21 @@ tcp        0      0 0.0.0.0:6200            0.0.0.0:*               LISTEN      
 While the listener is active, it is not reachable from outside the machine.
 
 
+## SSH Enumeration
+
+The SSH service running on the target machine provides valuable information about the operating system. By examining the SSH version, we can often determine the exact distribution and version of the OS. Here's how you can use the SSH version to identify the OS:
+
+The SSH service on the target machine is running `OpenSSH 4.7p1 Debian 8ubuntu1`. This version string contains several clues:
+* OpenSSH 4.7p1: The version of OpenSSH.
+* Debian: Indicates the operating system is based on Debian.
+* 8ubuntu1: Suggests the OS is Ubuntu, specifically an older version.
+
+A quick Google search for "OpenSSH 4.7p1 Debian 8ubuntu1" reveals that this version corresponds to Ubuntu 8.04 (Hardy Heron). This is an older version of Ubuntu.
+
+![image](https://github.com/user-attachments/assets/c47a10fe-b11c-4a6f-b2e8-df1d8d8b6c93)
+
+![image](https://github.com/user-attachments/assets/7e5de03e-c952-4da4-ac1c-0e2dc641052c)
 
 
-
-
-
+## SMB Enumeration
 
