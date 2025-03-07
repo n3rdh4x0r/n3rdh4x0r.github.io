@@ -1,11 +1,11 @@
 {
   "author": {
-    "email": "3743342+schnerring@users.noreply.github.com",
-    "name": "Michael Schnerring",
-    "url": "https://schnerring.net"
+    "email": "n3rdh4x0r@gmail.com",
+    "name": "Dilanka Kaushal Hewage",
+    "url": "https://n3rdh4x0r.blog"
   },
   "bugs": {
-    "url": "https://github.com/schnerring/schnerring.github.io/issues"
+    "url": "https://github.com/n3rdh4x0r/n3rdh4x0r.github.io/issues"
   },
   "comments": {
     "dependencies": {
@@ -50,7 +50,7 @@
     "typeface-fira-code": "^1.1.13",
     "typeface-roboto-slab": "^1.1.13"
   },
-  "description": "My personal website, schnerring.net.",
+  "description": "My personal website, n3rdh4x0r.blog.",
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^6.0.0",
     "cssnano": "^7.0.5",
@@ -72,9 +72,9 @@
     "stylelint": "^16.9.0",
     "stylelint-prettier": "^5.0.2"
   },
-  "homepage": "https://github.com/schnerring/schnerring.github.io#readme",
+  "homepage": "https://github.com/n3rdh4x0r/n3rdh4x0r.github.io#readme",
   "keywords": [
-    "Michael Schnerring",
+    "Dilanka Kaushal Hewage",
     "website",
     "blog"
   ],
@@ -85,10 +85,10 @@
     "*.md": "markdownlint --fix"
   },
   "main": "index.js",
-  "name": "schnerring.github.io",
+  "name": "n3rdh4x0r.github.io",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/schnerring/schnerring.github.io.git"
+    "url": "git+https://github.com/n3rdh4x0r/n3rdh4x0r.github.io.git"
   },
   "scripts": {
     "lint": "npm run lint:css && npm run lint:js && npm run lint:md",
