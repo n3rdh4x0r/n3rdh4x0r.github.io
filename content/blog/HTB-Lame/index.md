@@ -1,7 +1,7 @@
 ---
 title:
   "HTB - Lame"
-date: 2025-01-25T01:00:27+02:00
+date: 2021-04-25T01:00:27+02:00
 cover:
   src: cover.png
 draft: false
@@ -11,3 +11,6 @@ tags:
   - HTB
   - Lame
 
+aliases:
+
+---
