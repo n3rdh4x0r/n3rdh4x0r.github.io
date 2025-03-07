@@ -1,5 +1,5 @@
 ---
-title: Hello, I'm Michael 👋
+title: Hello, I'm Dilanka 👋
 ---
 
 This is the place where I share my thoughts and notes about things that I’m
