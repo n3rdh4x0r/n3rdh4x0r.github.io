@@ -101,11 +101,11 @@ enableGitInfo = true
     name = "Blog"
     url = "/blog"
     weight = 10
-  [[menu.main]]
-    identifier = "projects"
-    name = "Projects"
-    url = "/projects"
-    weight = 20
+  #[[menu.main]]
+  #  identifier = "projects"
+  #  name = "Projects"
+  #  url = "/projects"
+  #  weight = 20
   #[[menu.main]]
   #  identifier = "cv"
   #  name = "CV"
@@ -116,11 +116,11 @@ enableGitInfo = true
     name = "About"
     url = "/about"
     weight = 40
-  [[menu.main]]
-    identifier = "stats"
-    name = "Stats"
-    url = "/stats"
-    weight = 50
+  #[[menu.main]]
+  #  identifier = "stats"
+  #  name = "Stats"
+  #  url = "/stats"
+  #  weight = 50
 
 [languages]
   [languages.en]
