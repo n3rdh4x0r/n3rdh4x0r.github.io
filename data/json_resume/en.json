@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
-    "name": "Michael Schnerring",
-    "label": "Software Engineer",
-    "image": "https://schnerring.net/michael-schnerring.jpg",
+    "name": "Dilanka Kaushal Hewage",
+    "label": "Red Team/ Offensive Security Engineer",
+    "image": "https://n3rdh4x0r.blog/michael-schnerring.jpg",
     "summary": "I've been a computer geek all my life. I'm passionate about open-source and digital privacy. I like video games and CrossFit. I also blog sometimes.",
     "location": {
       "city": "Basel",
@@ -12,23 +12,23 @@
     "profiles": [
       {
         "network": "GitHub",
-        "url": "https://github.com/schnerring"
+        "url": "https://github.com/n3rdh4x0r"
       },
       {
         "network": "X",
-        "url": "https://x.com/schnerringo"
+        "url": "https://x.com/n3rdh4x0r"
       },
       {
         "network": "Mastodon",
-        "url": "https://hachyderm.io/@schnerring"
+        "url": "https://hachyderm.io/@n3rdh4x0r"
       },
       {
         "network": "LinkedIn",
-        "url": "https://www.linkedin.com/in/schnerring"
+        "url": "https://www.linkedin.com/in/n3rdh4x0r"
       },
       {
         "network": "RSS",
-        "url": "https://schnerring.net/index.xml"
+        "url": "https://n3rdh4x0r.blog/index.xml"
       }
     ]
   },
@@ -37,10 +37,10 @@
       "name": "Combyte AG",
       "location": "Brugg, Switzerland",
       "description": "Intelligent software solutions for the social sector",
-      "position": "Full Stack Developer",
+      "position": "Red Team/ Offensive Security Engineer",
       "url": "https://combyte.ch",
       "startDate": "2011-11-01",
-      "summary": "Develops and distributes software solutions for social institutions, counseling centers, homes, schools etc. since 1997."
+      "summary": ""
     }
   ],
   "education": [],
