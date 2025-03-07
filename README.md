@@ -1,4 +1,4 @@
 # n3rdh4x0r.github.io
 
-My personal website, [schnerring.net](https://n3rdh4x0r.blog).
+My personal website, [n3rdh4x0r.blog](https://n3rdh4x0r.blog).
 
