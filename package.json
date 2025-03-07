@@ -1,11 +1,11 @@
 {
   "author": {
-    "email": "n3rdh4x0r@gmail.com",
-    "name": "Dilanka Kaushal Hewage",
-    "url": "https://n3rdh4x0r.blog"
+    "email": "3743342+schnerring@users.noreply.github.com",
+    "name": "Michael Schnerring",
+    "url": "https://schnerring.net"
   },
   "bugs": {
-    "url": "https://github.com/n3rdh4x0r/n3rdh4x0r.github.io/issues"
+    "url": "https://github.com/schnerring/schnerring.github.io/issues"
   },
   "comments": {
     "dependencies": {
@@ -72,9 +72,9 @@
     "stylelint": "^16.9.0",
     "stylelint-prettier": "^5.0.2"
   },
-  "homepage": "https://github.com/n3rdh4x0r/n3rdh4x0r.github.io#readme",
+  "homepage": "https://github.com/schnerring/schnerring.github.io#readme",
   "keywords": [
-    "Dilanka Kaushal Hewage",
+    "Michael Schnerring",
     "website",
     "blog"
   ],
@@ -88,7 +88,7 @@
   "name": "schnerring.github.io",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n3rdh4x0r/n3rdh4x0r.github.io.git"
+    "url": "git+https://github.com/schnerring/schnerring.github.io.git"
   },
   "scripts": {
     "lint": "npm run lint:css && npm run lint:js && npm run lint:md",
