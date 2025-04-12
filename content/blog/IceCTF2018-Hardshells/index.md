@@ -1,7 +1,7 @@
 ---
 title:
-  "IceCTF2018 - hard shells"
-date: 2018-05-26T01:00:27+02:00
+  "IceCTF2018 - Hard shells"
+date: 2018-08-26T01:00:27+02:00
 cover:
   src: cover.png
 draft: false
@@ -12,7 +12,7 @@ tags:
   - hardshells
 
 aliases:
-  - IceCTF2018-hardshells
+  - IceCTF2018-Hardshells
 
 ---
 
